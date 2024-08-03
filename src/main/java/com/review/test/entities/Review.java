@@ -83,4 +83,8 @@ public class Review {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Instant getInstant() {
+        return instant;
+    }
 }

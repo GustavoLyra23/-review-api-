@@ -3,10 +3,14 @@ package com.review.test.services;
 import com.review.test.dtos.LoginRequest;
 import com.review.test.dtos.UserDto;
 import com.review.test.dtos.UserMinDto;
+import com.review.test.dtos.UserNameDto;
 import com.review.test.entities.User;
+import com.review.test.projections.UserNameProjection;
 import com.review.test.repositories.RoleRepository;
 import com.review.test.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,5 +43,9 @@ public class UserServiceImpl {
         return encoder.matches(loginRequest.password(), user.getPassword());
     }
 
-
+    @Transactional(readOnly = true)
+    public Page<UserNameDto> getAllUsers(Pageable pageable) {
+        Page<UserNameProjection> projections = userRepository.findUsersProjection(pageable);
+        return projections.map(UserNameDto::new);
+    }
 }
