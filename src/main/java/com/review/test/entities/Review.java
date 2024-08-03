@@ -1,7 +1,9 @@
 package com.review.test.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +16,8 @@ public class Review {
     private String establishment;
     private String description;
     private Integer rating;
+    @CreationTimestamp
+    private Instant instant;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
