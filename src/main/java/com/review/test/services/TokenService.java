@@ -41,6 +41,7 @@ public class TokenService {
 
         var claims = JwtClaimsSet.builder()
                 .issuer("mybackend")
+                .claim("name", entity.get().getUsername())
                 .claim("scope", scopes)
                 .subject(entity.get().getId().toString())
                 .expiresAt(now.plusSeconds(expiresIn))

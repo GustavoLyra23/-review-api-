@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 public class UserServiceImpl {
@@ -34,7 +37,7 @@ public class UserServiceImpl {
         User userEntity = new User();
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(encoder.encode(user.getPassword()));
-        userEntity.addRole(roleRepository.getReferenceById(1L));
+        userEntity.addRole(roleRepository.getReferenceById(2L));
         userEntity = userRepository.save(userEntity);
         return new UserMinDto(userEntity);
     }
@@ -47,5 +50,13 @@ public class UserServiceImpl {
     public Page<UserNameDto> getAllUsers(Pageable pageable) {
         Page<UserNameProjection> projections = userRepository.findUsersProjection(pageable);
         return projections.map(UserNameDto::new);
+    }
+
+    public UserMinDto findByName(String name, JwtAuthenticationToken token) {
+        if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
+            throw new RuntimeException("Invalid user");
+        }
+        var user = userRepository.findByUsername(name);
+        return new UserMinDto(user.orElseThrow(() -> new NoSuchElementException("User not found")));
     }
 }
