@@ -32,9 +32,11 @@ public class TokenService {
     public LoginResponse verifyLogIn(LoginRequest loginRequest) {
         var entity = userRepository.findByUsername(loginRequest.username());
 
+        //checks the existence of the user and whether the password provided is valid
         if (entity.isEmpty() || !userService.isLoginCorrect(loginRequest, entity.get())) {
             throw new BadCredentialsException("user or password is invalid");
         }
+
         var now = Instant.now();
         var expiresIn = 300L;
         var scopes = entity.get().getRoles().stream().map(Role::getAuthority).collect(Collectors.joining(" "));

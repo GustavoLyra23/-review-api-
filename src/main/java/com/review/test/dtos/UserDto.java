@@ -5,9 +5,9 @@ import jakarta.validation.constraints.Size;
 
 public class UserDto {
 
-    @NotBlank
+    @NotBlank(message = "username can't be blank")
     private String username;
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 20, message = "password must have 6 to 20 characters")
     private String password;
 
     public UserDto() {

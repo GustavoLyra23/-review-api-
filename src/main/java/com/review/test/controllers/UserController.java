@@ -4,6 +4,7 @@ import com.review.test.dtos.UserDto;
 import com.review.test.dtos.UserMinDto;
 import com.review.test.dtos.UserNameDto;
 import com.review.test.services.UserServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class UserController {
     private UserServiceImpl userServiceImpl;
 
     @PostMapping
-    public ResponseEntity<UserMinDto> save(@RequestBody UserDto user) {
+    public ResponseEntity<UserMinDto> save(@Valid @RequestBody UserDto user) {
         var userMinDto = userServiceImpl.crateUser(user);
         return ResponseEntity.ok(userMinDto);
     }

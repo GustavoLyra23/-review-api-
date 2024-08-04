@@ -8,16 +8,16 @@ import com.review.test.entities.User;
 import com.review.test.projections.UserNameProjection;
 import com.review.test.repositories.RoleRepository;
 import com.review.test.repositories.UserRepository;
+import com.review.test.services.exceptions.ForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Service
 public class UserServiceImpl {
@@ -42,9 +42,6 @@ public class UserServiceImpl {
         return new UserMinDto(userEntity);
     }
 
-    public boolean isLoginCorrect(LoginRequest loginRequest, User user) {
-        return encoder.matches(loginRequest.password(), user.getPassword());
-    }
 
     @Transactional(readOnly = true)
     public Page<UserNameDto> getAllUsers(Pageable pageable) {
@@ -52,11 +49,18 @@ public class UserServiceImpl {
         return projections.map(UserNameDto::new);
     }
 
+
     public UserMinDto findByName(String name, JwtAuthenticationToken token) {
         if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
-            throw new RuntimeException("Invalid user");
+            throw new ForbiddenException("Acess denied");
         }
         var user = userRepository.findByUsername(name);
-        return new UserMinDto(user.orElseThrow(() -> new NoSuchElementException("User not found")));
+        return new UserMinDto(user.orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
+
+
+    public boolean isLoginCorrect(LoginRequest loginRequest, User user) {
+        return encoder.matches(loginRequest.password(), user.getPassword());
+    }
+
 }
