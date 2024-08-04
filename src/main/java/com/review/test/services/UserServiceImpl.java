@@ -1,6 +1,10 @@
 package com.review.test.services;
 
-import com.review.test.dtos.*;
+import com.review.test.dtos.login.LoginRequest;
+import com.review.test.dtos.user.UserDto;
+import com.review.test.dtos.user.UserMinDto;
+import com.review.test.dtos.user.UserNameDto;
+import com.review.test.dtos.user.UserUpdateDto;
 import com.review.test.entities.Role;
 import com.review.test.entities.User;
 import com.review.test.projections.UserNameProjection;
@@ -57,14 +61,23 @@ public class UserServiceImpl {
         return new UserMinDto(user.orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
 
+
     @Transactional(propagation = Propagation.REQUIRED)
     public UserUpdateDto update(String name, UserUpdateDto userUpdateDto, JwtAuthenticationToken token) {
-        if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
-            throw new ForbiddenException("Acess denied");
-        }
         var user = userRepository.findByUsername(name);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
+        }
+
+        //verifies if the client who's doing the request is a non admin and is trying to change other users data
+        if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
+            throw new ForbiddenException("Acess denied");
+        }
+
+        //verifies if the client who's doing the request is a non admin and is trying to change their roles
+        if (!user.get().hasRole("ROLE_ADMIN") && userUpdateDto.hasRole(1L) &&
+                !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
+            throw new ForbiddenException("Acess denied, you cannot change your role data");
         }
 
         var userEntity = user.get();
@@ -72,6 +85,7 @@ public class UserServiceImpl {
         userEntity = userRepository.save(userEntity);
         return new UserUpdateDto(userEntity);
     }
+
 
 
     public boolean isLoginCorrect(LoginRequest loginRequest, User user) {
@@ -91,6 +105,4 @@ public class UserServiceImpl {
             throw new UsernameNotFoundException("Role not found");
         }
     }
-
-
 }

@@ -1,8 +1,8 @@
 package com.review.test.controllers.handlers;
 
-import com.review.test.dtos.FieldError;
-import com.review.test.dtos.StandardError;
-import com.review.test.dtos.ValidationErrors;
+import com.review.test.dtos.erro.FieldError;
+import com.review.test.dtos.erro.StandardError;
+import com.review.test.dtos.erro.ValidationErrors;
 import com.review.test.services.exceptions.ForbiddenException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.review.test.dtos;
+package com.review.test.dtos.review;
 
 import com.review.test.entities.Review;
 

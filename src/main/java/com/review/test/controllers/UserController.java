@@ -1,9 +1,9 @@
 package com.review.test.controllers;
 
-import com.review.test.dtos.UserDto;
-import com.review.test.dtos.UserMinDto;
-import com.review.test.dtos.UserNameDto;
-import com.review.test.dtos.UserUpdateDto;
+import com.review.test.dtos.user.UserDto;
+import com.review.test.dtos.user.UserMinDto;
+import com.review.test.dtos.user.UserNameDto;
+import com.review.test.dtos.user.UserUpdateDto;
 import com.review.test.services.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{name}")
-    public ResponseEntity<UserUpdateDto> updateUser(@PathVariable("name") String name, @RequestBody UserUpdateDto userUpdateDto, JwtAuthenticationToken token) {
+    public ResponseEntity<UserUpdateDto> updateUser(@PathVariable("name") String name, @Valid @RequestBody UserUpdateDto userUpdateDto, JwtAuthenticationToken token) {
         UserUpdateDto updateDto = userServiceImpl.update(name, userUpdateDto, token);
         return ResponseEntity.ok(updateDto);
     }

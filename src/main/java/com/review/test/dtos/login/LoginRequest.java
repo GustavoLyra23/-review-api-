@@ -1,4 +1,4 @@
-package com.review.test.dtos;
+package com.review.test.dtos.login;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

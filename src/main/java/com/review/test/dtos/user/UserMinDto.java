@@ -1,6 +1,7 @@
-package com.review.test.dtos;
+package com.review.test.dtos.user;
 
 
+import com.review.test.dtos.role.RoleDtoRequest;
 import com.review.test.entities.Role;
 import com.review.test.entities.User;
 
@@ -13,7 +14,7 @@ public class UserMinDto {
     private String id;
     private String name;
     private Instant instant;
-    private Set<RoleDto> roles = new HashSet<>();
+    private Set<RoleDtoRequest> roles = new HashSet<>();
 
     public UserMinDto() {
     }
@@ -29,7 +30,7 @@ public class UserMinDto {
         name = user.getUsername();
         instant = Instant.now();
         for (Role role : user.getRoles()) {
-            roles.add(new RoleDto(role));
+            roles.add(new RoleDtoRequest(role));
         }
     }
 
@@ -45,7 +46,7 @@ public class UserMinDto {
         return instant;
     }
 
-    public Set<RoleDto> getRoles() {
+    public Set<RoleDtoRequest> getRoles() {
         return roles;
     }
 }

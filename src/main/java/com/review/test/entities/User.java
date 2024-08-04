@@ -78,7 +78,7 @@ public class User {
     }
 
     public boolean hasRole(String roleName) {
-        return roles.stream().anyMatch(role -> role.getAuthority().equals(roleName));
+        return roles.stream().anyMatch(role -> role.getAuthority().equalsIgnoreCase(roleName));
     }
 
     public List<Review> getReviews() {

@@ -1,8 +1,8 @@
-package com.review.test.services.validations.insert;
+package com.review.test.services.validations.role;
 
 import com.review.test.dtos.erro.FieldError;
-import com.review.test.dtos.user.UserDto;
-import com.review.test.repositories.UserRepository;
+import com.review.test.dtos.role.RoleDtoRequest;
+import com.review.test.repositories.RoleRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,26 +10,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserDto> {
+public class RoleInsertValidator implements ConstraintValidator<RoleInsertValid, RoleDtoRequest> {
 
     @Autowired
-    private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
 
     @Override
-    public void initialize(UserInsertValid ann) {
+    public void initialize(RoleInsertValid ann) {
     }
 
     @Override
-    public boolean isValid(UserDto userDto, ConstraintValidatorContext context) {
+    public boolean isValid(RoleDtoRequest roleDtoRequest, ConstraintValidatorContext context) {
         List<FieldError> fieldErrors = new ArrayList<>();
 
-
-        var user = userRepository.findByUsername(userDto.getUsername());
-        if (user.isPresent()) {
-            fieldErrors.add(new FieldError("name", "already exists"));
+        var role = roleRepository.findById(roleDtoRequest.getId());
+        if (role.isEmpty()) {
+            fieldErrors.add(new FieldError("role", "invalid role"));
         }
-
         fieldErrors.forEach(fieldError -> {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(fieldError.getMessage()).addPropertyNode(fieldError.getField())

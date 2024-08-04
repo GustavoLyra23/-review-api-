@@ -1,8 +1,8 @@
 package com.review.test.services;
 
 
-import com.review.test.dtos.LoginRequest;
-import com.review.test.dtos.LoginResponse;
+import com.review.test.dtos.login.LoginRequest;
+import com.review.test.dtos.login.LoginResponse;
 import com.review.test.entities.Role;
 import com.review.test.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

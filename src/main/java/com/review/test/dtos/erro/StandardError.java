@@ -1,4 +1,4 @@
-package com.review.test.dtos;
+package com.review.test.dtos.erro;
 
 import java.time.Instant;
 

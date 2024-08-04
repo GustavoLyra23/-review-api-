@@ -1,7 +1,7 @@
 package com.review.test.controllers;
 
-import com.review.test.dtos.LoginRequest;
-import com.review.test.dtos.LoginResponse;
+import com.review.test.dtos.login.LoginRequest;
+import com.review.test.dtos.login.LoginResponse;
 import com.review.test.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

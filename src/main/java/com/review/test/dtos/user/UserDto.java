@@ -1,4 +1,4 @@
-package com.review.test.dtos;
+package com.review.test.dtos.user;
 
 import com.review.test.services.validations.insert.UserInsertValid;
 import jakarta.validation.constraints.NotBlank;

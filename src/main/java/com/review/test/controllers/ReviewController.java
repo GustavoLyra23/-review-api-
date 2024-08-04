@@ -1,7 +1,7 @@
 package com.review.test.controllers;
 
-import com.review.test.dtos.ReviewDtoRequest;
-import com.review.test.dtos.ReviewDtoResponse;
+import com.review.test.dtos.review.ReviewDtoRequest;
+import com.review.test.dtos.review.ReviewDtoResponse;
 import com.review.test.services.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
