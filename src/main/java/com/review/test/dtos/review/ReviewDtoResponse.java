@@ -70,4 +70,7 @@ public class ReviewDtoResponse {
         return description;
     }
 
+    public Long getId() {
+        return id;
+    }
 }

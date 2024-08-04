@@ -7,11 +7,11 @@ import jakarta.validation.constraints.Positive;
 
 import java.util.Objects;
 
+@RoleInsertValid
 public class RoleDtoRequest {
 
     @NotEmpty(message = "id cant be empy")
     @Positive(message = "id must be positive")
-    @RoleInsertValid
     private Long id;
 
     public RoleDtoRequest() {

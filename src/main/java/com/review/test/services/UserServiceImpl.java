@@ -114,7 +114,7 @@ public class UserServiceImpl {
         }
     }
 
-    //verifies if a non admin client is trying to change other users data
+    //verifies if a non admin user is trying to change other users data
     private void verifyClientAcess(String name, JwtAuthenticationToken token) {
         if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
             throw new ForbiddenException("Acess denied");
