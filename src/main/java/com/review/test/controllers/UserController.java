@@ -3,6 +3,7 @@ package com.review.test.controllers;
 import com.review.test.dtos.UserDto;
 import com.review.test.dtos.UserMinDto;
 import com.review.test.dtos.UserNameDto;
+import com.review.test.dtos.UserUpdateDto;
 import com.review.test.services.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,16 @@ public class UserController {
     }
 
     @GetMapping(value = "/{name}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ROLE_ADMIN','SCOPE_ROLE_CLIENT')")
     public ResponseEntity<UserMinDto> getUser(@PathVariable("name") String name, JwtAuthenticationToken token) {
         UserMinDto user = userServiceImpl.findByName(name, token);
         return ResponseEntity.ok(user);
     }
+
+    @PutMapping(value = "/{name}")
+    public ResponseEntity<UserUpdateDto> updateUser(@PathVariable("name") String name, @RequestBody UserUpdateDto userUpdateDto, JwtAuthenticationToken token) {
+        UserUpdateDto updateDto = userServiceImpl.update(name, userUpdateDto, token);
+        return ResponseEntity.ok(updateDto);
+    }
+
 
 }

@@ -1,33 +1,26 @@
 package com.review.test.dtos;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.review.test.entities.Role;
 import com.review.test.entities.User;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserMinDto {
+public class UserUpdateDto {
 
     private String id;
-    private String name;
-    private Instant instant;
+    private String username;
+    private String password;
     private Set<RoleDto> roles = new HashSet<>();
 
-    public UserMinDto() {
+    public UserUpdateDto() {
     }
 
-    public UserMinDto(String id, String name) {
-        this.id = id;
-        this.name = name;
-        this.instant = Instant.now();
-    }
-
-    public UserMinDto(User user) {
+    public UserUpdateDto(User user) {
         id = String.valueOf(user.getId());
-        name = user.getUsername();
-        instant = Instant.now();
+        username = user.getUsername();
+        password = user.getPassword();
         for (Role role : user.getRoles()) {
             roles.add(new RoleDto(role));
         }
@@ -37,12 +30,13 @@ public class UserMinDto {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public Instant getInstant() {
-        return instant;
+    @JsonIgnore
+    public String getPassword() {
+        return password;
     }
 
     public Set<RoleDto> getRoles() {

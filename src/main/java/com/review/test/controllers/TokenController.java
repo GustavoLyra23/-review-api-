@@ -3,6 +3,7 @@ package com.review.test.controllers;
 import com.review.test.dtos.LoginRequest;
 import com.review.test.dtos.LoginResponse;
 import com.review.test.services.TokenService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class TokenController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> postToken(@RequestBody LoginRequest loginRequest) {
-        LoginResponse response = service.verifyLogIn(loginRequest);
+    public ResponseEntity<LoginResponse> postToken(@Valid @RequestBody LoginRequest loginRequest) {
+        LoginResponse response = service.tokenCreation(loginRequest);
         return ResponseEntity.ok(response);
     }
 

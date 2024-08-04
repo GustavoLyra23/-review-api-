@@ -29,7 +29,7 @@ public class TokenService {
     private UserServiceImpl userService;
 
     @Transactional
-    public LoginResponse verifyLogIn(LoginRequest loginRequest) {
+    public LoginResponse tokenCreation(LoginRequest loginRequest) {
         var entity = userRepository.findByUsername(loginRequest.username());
 
         //checks the existence of the user and whether the password provided is valid
