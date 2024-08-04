@@ -10,9 +10,11 @@ import com.review.test.entities.User;
 import com.review.test.projections.UserNameProjection;
 import com.review.test.repositories.RoleRepository;
 import com.review.test.repositories.UserRepository;
+import com.review.test.services.exceptions.DatabaseException;
 import com.review.test.services.exceptions.ForbiddenException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +23,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl {
@@ -54,9 +58,7 @@ public class UserServiceImpl {
 
     @Transactional(readOnly = true)
     public UserMinDto findByName(String name, JwtAuthenticationToken token) {
-        if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
-            throw new ForbiddenException("Acess denied");
-        }
+        verifyClientAcess(name, token);
         var user = userRepository.findByUsername(name);
         return new UserMinDto(user.orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
@@ -69,14 +71,10 @@ public class UserServiceImpl {
             throw new UsernameNotFoundException("User not found");
         }
 
-        //verifies if the client who's doing the request is a non admin and is trying to change other users data
-        if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
-            throw new ForbiddenException("Acess denied");
-        }
+        verifyClientAcess(name, token);
 
         //verifies if the client who's doing the request is a non admin and is trying to change their roles
-        if (!user.get().hasRole("ROLE_ADMIN") && userUpdateDto.hasRole(1L) &&
-                !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
+        if (!user.get().hasRole("ROLE_ADMIN") && userUpdateDto.hasRole(1L) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
             throw new ForbiddenException("Acess denied, you cannot change your role data");
         }
 
@@ -86,6 +84,16 @@ public class UserServiceImpl {
         return new UserUpdateDto(userEntity);
     }
 
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void deleteUser(String id) {
+        userRepository.findById(UUID.fromString(id)).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        try {
+            userRepository.deleteById(UUID.fromString(id));
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Referential integrity failure");
+        }
+    }
 
 
     public boolean isLoginCorrect(LoginRequest loginRequest, User user) {
@@ -104,5 +112,13 @@ public class UserServiceImpl {
         } catch (EntityNotFoundException e) {
             throw new UsernameNotFoundException("Role not found");
         }
+    }
+
+    //verifies if a non admin client is trying to change other users data
+    private void verifyClientAcess(String name, JwtAuthenticationToken token) {
+        if (!token.getTokenAttributes().containsValue(name) && !token.getTokenAttributes().containsValue("ROLE_ADMIN")) {
+            throw new ForbiddenException("Acess denied");
+        }
+
     }
 }

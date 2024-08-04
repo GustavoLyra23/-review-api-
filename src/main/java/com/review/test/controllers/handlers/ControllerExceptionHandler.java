@@ -3,6 +3,7 @@ package com.review.test.controllers.handlers;
 import com.review.test.dtos.erro.FieldError;
 import com.review.test.dtos.erro.StandardError;
 import com.review.test.dtos.erro.ValidationErrors;
+import com.review.test.services.exceptions.DatabaseException;
 import com.review.test.services.exceptions.ForbiddenException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -90,4 +91,18 @@ public class ControllerExceptionHandler {
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> illegalArgument(DatabaseException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("DatabaseError");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+
 }

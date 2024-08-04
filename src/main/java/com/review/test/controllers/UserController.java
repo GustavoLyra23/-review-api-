@@ -46,5 +46,12 @@ public class UserController {
         return ResponseEntity.ok(updateDto);
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
+        userServiceImpl.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
