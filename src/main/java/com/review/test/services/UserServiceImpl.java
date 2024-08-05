@@ -87,8 +87,10 @@ public class UserServiceImpl {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteUser(String id) {
-        userRepository.findById(UUID.fromString(id)).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        var user = userRepository.findById(UUID.fromString(id)).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         try {
+            user.getRoles().clear();
+            userRepository.save(user);
             userRepository.deleteById(UUID.fromString(id));
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Referential integrity failure");
